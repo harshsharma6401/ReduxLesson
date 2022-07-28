@@ -34,7 +34,9 @@
 
 
 const redux = require('redux');
+const combineReducers = redux.combineReducers;
 const createStore = redux.createStore
+const configureStore = redux.configureStore;
 const bindActionCreators = redux.bindActionCreators;
 
 const CAKE_ORDERED = 'CAKE_ORDERED';
@@ -81,12 +83,21 @@ function restockIcecream(qty=1)
 //Shopkeeper is reducer here
 // numOfCakes = 10;
 
-const initialState = {
+/* const initialState = {
     numofCakes  : 10,
     numofIceCreams: 20
+} */
+
+const initialCakeState = {
+    numofCakes  : 10,
 }
 
-const reducer = (state = initialState,action) =>{
+const initialIceCreamState = {
+    numofIceCreams: 20,
+}
+
+
+const cakeReducer = (state = initialCakeState,action) =>{
 
     switch(action.type)
     {
@@ -101,6 +112,18 @@ const reducer = (state = initialState,action) =>{
                 ...state,
                 numofCakes : state.numofCakes + action.payload,
             }    
+            
+
+        default:
+            return state    
+    }
+
+}
+
+const iceCreamReducer = (state = initialIceCreamState,action) =>{
+
+    switch(action.type)
+    {
                 
         case ICE_CREAM_ORDERED:
             return {
@@ -121,6 +144,7 @@ const reducer = (state = initialState,action) =>{
 
 }
 
+
 // redux Store
 // Holds app state
 // Allows access to state via getState()
@@ -129,7 +153,13 @@ const reducer = (state = initialState,action) =>{
 // Handles unregestering of listeners via the fucntion returned by subscribe(listener)
 
 //Responsibility 1
-const store = createStore(reducer);
+
+const rootReducer = combineReducers({
+    cake: cakeReducer,
+    iceCream : iceCreamReducer
+})
+
+const store = createStore(rootReducer);
 
 //Responsibility 2
 console.log("Intial State",store.getState());
