@@ -39,6 +39,8 @@ const bindActionCreators = redux.bindActionCreators;
 
 const CAKE_ORDERED = 'CAKE_ORDERED';
 const CAKE_RESTOCKED = 'CAKE_RESTOCKED';
+const ICE_CREAM_ORDERED = 'ICE_CREAM_ORDERED';
+const ICE_CREAM_RESTOCKED = 'ICE_CREAM_RESTOCKED';
 
 //Action in redux
 function orderCake()
@@ -58,14 +60,30 @@ function restockCake(qty = 1){
     }
 }
 
+function orderIcecream(qty=1)
+{
+    return {
+        type : ICE_CREAM_ORDERED,
+        payload: qty
+    }
+}
+
+function restockIcecream(qty=1)
+{
+    return{
+        type: ICE_CREAM_RESTOCKED,
+        payload:qty,
+    }
+}
+
 //Reducer 
 //(previousState,action) => newState
-
+//Shopkeeper is reducer here
 // numOfCakes = 10;
 
 const initialState = {
     numofCakes  : 10,
-    anotherProperty: 0
+    numofIceCreams: 20
 }
 
 const reducer = (state = initialState,action) =>{
@@ -83,6 +101,19 @@ const reducer = (state = initialState,action) =>{
                 ...state,
                 numofCakes : state.numofCakes + action.payload,
             }    
+                
+        case ICE_CREAM_ORDERED:
+            return {
+                ...state, //First make a copy of state and only update numofCakes
+                numofIceCreams : state.numofIceCreams - 1,
+            }
+        
+        case ICE_CREAM_RESTOCKED:
+            return{
+                ...state,
+                numofIceCreams : state.numofIceCreams + action.payload,
+            }    
+         
 
         default:
             return state    
@@ -116,15 +147,16 @@ store.dispatch(orderCake()); */
 //Restocking Cakes
 /* store.dispatch(restockCake(3)); */
 
-const actions = bindActionCreators({orderCake,restockCake},store.dispatch);
+const actions = bindActionCreators({orderCake,restockCake,orderIcecream,restockIcecream},store.dispatch);
 
 actions.orderCake();
 actions.orderCake();
 actions.orderCake();
-
+actions.orderIcecream();
+actions.orderIcecream();
 actions.restockCake(3);
-
+actions.restockIcecream(2);
 unsubscribe();
-
-
+ 
+ 
 
